@@ -1,123 +1,119 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <title>تجربة واقع معزز للتراث الرقمي</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>تجربة بوابة تراثية – واقع معزز</title>
 
   <!-- تحميل model-viewer من CDN -->
-  <script type="module"
-    src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js">
-  </script>
+  <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
 
   <style>
-    :root {
-      color-scheme: dark light;
-      --accent: #b45309;          /* برتقالي تراثي */
-      --accent-soft: rgba(180, 83, 9, 0.08);
-      --bg: #0b0a07;
-      --fg: #fef9c3;
-    }
-
-    * {
-      box-sizing: border-box;
-    }
-
     body {
       margin: 0;
-      min-height: 100vh;
-      display: flex;
-      align-items: stretch;
-      justify-content: center;
-      background:
-        radial-gradient(circle at top, #1e293b 0, #020617 50%, #000 100%),
-        url("https://images.pexels.com/photos/235985/pexels-photo-235985.jpeg?auto=compress&cs=tinysrgb&w=1200") center/cover fixed;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Kufi Arabic", sans-serif;
-      color: var(--fg);
-    }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.92), rgba(30, 64, 175, 0.4));
-      pointer-events: none;
-      z-index: -1;
-    }
-
-    .page {
-      padding: 16px;
-      margin: auto;
-      width: 100%;
-      max-width: 900px;
-    }
-
-    header {
-      margin-bottom: 16px;
+      background: #0f172a;
+      font-family: "Noto Kufi Arabic", system-ui, sans-serif;
+      color: white;
       text-align: center;
+      padding: 20px;
+      direction: rtl;
     }
 
-    header h1 {
-      font-size: clamp(1.5rem, 3vw, 2.3rem);
-      margin: 0 0 6px;
-      letter-spacing: 0.06em;
+    h1 {
+      margin-top: 10px;
+      font-size: 1.6rem;
+      margin-bottom: 6px;
     }
 
-    header p {
-      margin: 0;
+    p {
+      margin: 0 0 14px;
       opacity: 0.9;
       font-size: 0.95rem;
-    }
-
-    .tagline {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      padding: 0.25rem 0.8rem;
-      border-radius: 999px;
-      border: 1px solid rgba(250, 250, 249, 0.25);
-      background: radial-gradient(circle at top, rgba(250, 204, 21, 0.4), transparent 70%);
-      font-size: 0.75rem;
-      margin-bottom: 8px;
-    }
-
-    .tag-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 999px;
-      background: #fbbf24;
-      box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.25);
-    }
-
-    .viewer-card {
-      border-radius: 26px;
-      padding: 1px;
-      background:
-        linear-gradient(135deg, rgba(251, 191, 36, 0.7), rgba(180, 83, 9, 0.85), rgba(59, 130, 246, 0.7));
-      box-shadow:
-        0 22px 45px rgba(15, 23, 42, 0.95),
-        0 0 0 1px rgba(148, 163, 184, 0.4);
-    }
-
-    .viewer-inner {
-      border-radius: 25px;
-      background:
-        radial-gradient(circle at top, #111827 0, #020617 55%, #000 100%);
-      padding: 10px;
-      border: 1px solid rgba(15, 23, 42, 0.9);
     }
 
     model-viewer {
       width: 100%;
       height: 70vh;
       max-height: 600px;
-      border-radius: 20px;
+      border-radius: 18px;
       background-color: #020617;
-      position: relative;
-      outline: none;
       --poster-color: transparent;
       --progress-bar-color: #facc15;
+      margin-top: 15px;
     }
 
-    /* زر "عرض في الواقع المعزز" */
+    .hint {
+      margin-top: 8px;
+      font-size: 0.85rem;
+      opacity: 0.85;
+    }
+
+    /* زر AR */
     .ar-button {
-      font: 600 0.95rem system-ui, -apple-system, BlinkMacSystemFont, "Sego
+      font-family: "Noto Kufi Arabic";
+      padding: 10px 18px;
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, #b45309, #d97706);
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 10px;
+      box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+    }
+
+    .ar-button:active {
+      transform: scale(0.97);
+    }
+
+    /* تعليمات AR */
+    #ar-instructions {
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 8px 16px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.7);
+      color: #fff;
+      font-size: 0.8rem;
+      display: none;
+      pointer-events: none;
+    }
+
+    model-viewer[ar-status="session-started"] #ar-instructions {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>تجربة البوابة التراثية</h1>
+  <p>استخدم زر <strong>عرض في الواقع المعزز</strong> لوضع بوابة تراثية ثلاثية الأبعاد داخل محيطك.</p>
+
+  <!-- العارض -->
+  <model-viewer
+      src="https://storage.googleapis.com/ar-models/heritage-door.glb"
+      alt="بوابة تراثية"
+      ar
+      ar-modes="webxr scene-viewer quick-look"
+      ar-scale="auto"
+      ar-placement="floor"
+      camera-controls
+      auto-rotate
+      shadow-intensity="1"
+      environment-image="neutral"
+      xr-environment>
+
+      <!-- زر الواقع المعزز -->
+      <button slot="ar-button" class="ar-button">عرض في الواقع المعزز</button>
+
+      <!-- تعليمات AR -->
+      <div id="ar-instructions">وجّه الكاميرا نحو الأرض ثم المس الشاشة لوضع البوابة.</div>
+  </model-viewer>
+
+  <div class="hint">اسحب لتدوير البوابة — قرّب بإصبعين لتغيير الحجم.</div>
+
+</body>
+</html>
