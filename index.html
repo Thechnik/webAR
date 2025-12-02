@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8" />
-  <title>WebAR – Astronaut Demo</title>
+  <title>تجربة واقع معزز للتراث الرقمي</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-  <!-- Load <model-viewer> from Google's CDN -->
+  <!-- تحميل model-viewer من CDN -->
   <script type="module"
     src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js">
   </script>
@@ -13,10 +13,10 @@
   <style>
     :root {
       color-scheme: dark light;
-      --accent: #4f46e5;
-      --accent-soft: rgba(79, 70, 229, 0.12);
-      --bg: #050816;
-      --fg: #f9fafb;
+      --accent: #b45309;          /* برتقالي تراثي */
+      --accent-soft: rgba(180, 83, 9, 0.08);
+      --bg: #0b0a07;
+      --fg: #fef9c3;
     }
 
     * {
@@ -29,9 +29,19 @@
       display: flex;
       align-items: stretch;
       justify-content: center;
-      background: radial-gradient(circle at top, #111827 0, #020617 55%, #000 100%);
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top, #1e293b 0, #020617 50%, #000 100%),
+        url("https://images.pexels.com/photos/235985/pexels-photo-235985.jpeg?auto=compress&cs=tinysrgb&w=1200") center/cover fixed;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Kufi Arabic", sans-serif;
       color: var(--fg);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.9), rgba(15, 23, 42, 0.92), rgba(30, 64, 175, 0.4));
+      pointer-events: none;
+      z-index: -1;
     }
 
     .page {
@@ -47,189 +57,67 @@
     }
 
     header h1 {
-      font-size: clamp(1.5rem, 2.5vw, 2.1rem);
+      font-size: clamp(1.5rem, 3vw, 2.3rem);
       margin: 0 0 6px;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.06em;
     }
 
     header p {
       margin: 0;
-      opacity: 0.8;
-      font-size: 0.9rem;
+      opacity: 0.9;
+      font-size: 0.95rem;
+    }
+
+    .tagline {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.25rem 0.8rem;
+      border-radius: 999px;
+      border: 1px solid rgba(250, 250, 249, 0.25);
+      background: radial-gradient(circle at top, rgba(250, 204, 21, 0.4), transparent 70%);
+      font-size: 0.75rem;
+      margin-bottom: 8px;
+    }
+
+    .tag-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #fbbf24;
+      box-shadow: 0 0 0 4px rgba(250, 204, 21, 0.25);
     }
 
     .viewer-card {
-      border-radius: 24px;
+      border-radius: 26px;
       padding: 1px;
-      background: linear-gradient(135deg, rgba(148, 163, 184, 0.6), rgba(59, 130, 246, 0.9));
+      background:
+        linear-gradient(135deg, rgba(251, 191, 36, 0.7), rgba(180, 83, 9, 0.85), rgba(59, 130, 246, 0.7));
       box-shadow:
-        0 18px 40px rgba(15, 23, 42, 0.85),
-        0 0 0 1px rgba(148, 163, 184, 0.25);
+        0 22px 45px rgba(15, 23, 42, 0.95),
+        0 0 0 1px rgba(148, 163, 184, 0.4);
     }
 
     .viewer-inner {
-      border-radius: 23px;
-      background: radial-gradient(circle at top, #020617 0, #020617 40%, #000 100%);
+      border-radius: 25px;
+      background:
+        radial-gradient(circle at top, #111827 0, #020617 55%, #000 100%);
       padding: 10px;
+      border: 1px solid rgba(15, 23, 42, 0.9);
     }
 
     model-viewer {
       width: 100%;
       height: 70vh;
       max-height: 600px;
-      border-radius: 18px;
+      border-radius: 20px;
       background-color: #020617;
       position: relative;
-      /* Make default focus ring subtle */
       outline: none;
       --poster-color: transparent;
-      --progress-bar-color: var(--accent);
+      --progress-bar-color: #facc15;
     }
 
-    /* Custom AR button (slotted into <model-viewer>) */
+    /* زر "عرض في الواقع المعزز" */
     .ar-button {
-      font: 500 0.95rem system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      padding: 0.55rem 1.1rem;
-      border-radius: 999px;
-      border: none;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.45rem;
-      background: linear-gradient(135deg, var(--accent), #6366f1);
-      color: #fff;
-      box-shadow:
-        0 8px 20px rgba(79, 70, 229, 0.6),
-        0 0 0 1px rgba(191, 219, 254, 0.35);
-      cursor: pointer;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-    }
-
-    .ar-button span.icon {
-      display: inline-block;
-      width: 18px;
-      height: 18px;
-      border-radius: 6px;
-      border: 1.2px solid rgba(248, 250, 252, 0.9);
-      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.5);
-      position: relative;
-    }
-
-    .ar-button span.icon::before {
-      content: "";
-      position: absolute;
-      inset: 3px;
-      border-radius: 3px;
-      border: 1px solid rgba(248, 250, 252, 0.75);
-    }
-
-    .ar-button:active {
-      transform: translateY(1px) scale(0.99);
-      box-shadow:
-        0 4px 10px rgba(79, 70, 229, 0.45),
-        0 0 0 1px rgba(191, 219, 254, 0.35);
-    }
-
-    /* Instruction overlay shown only during active AR session (WebXR / Scene Viewer) */
-    model-viewer > #ar-instructions {
-      position: absolute;
-      left: 50%;
-      bottom: 16px;
-      transform: translateX(-50%);
-      padding: 0.5rem 1rem;
-      border-radius: 999px;
-      font-size: 0.8rem;
-      letter-spacing: 0.04em;
-      text-transform: uppercase;
-      background: rgba(15, 23, 42, 0.88);
-      color: #e5e7eb;
-      border: 1px solid rgba(148, 163, 184, 0.6);
-      box-shadow:
-        0 10px 25px rgba(0, 0, 0, 0.75),
-        0 0 0 1px rgba(30, 64, 175, 0.6);
-      display: none;
-      pointer-events: none;
-      text-align: center;
-      max-width: 80%;
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-    }
-
-    /* Shows when AR session is running (WebXR) */
-    model-viewer[ar-status="session-started"] > #ar-instructions {
-      display: block;
-    }
-
-    .hint {
-      margin-top: 10px;
-      font-size: 0.8rem;
-      opacity: 0.7;
-      text-align: center;
-    }
-
-    @media (max-width: 640px) {
-      .viewer-card {
-        border-radius: 18px;
-      }
-
-      .viewer-inner {
-        padding: 6px;
-      }
-
-      model-viewer {
-        height: 65vh;
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <main class="page">
-    <header>
-      <h1>WebAR Astronaut Demo</h1>
-      <p>
-        Move, rotate, and scale the 3D model — then drop it into your real world with AR.
-      </p>
-    </header>
-
-    <section class="viewer-card">
-      <div class="viewer-inner">
-        <!-- Core WebAR viewer -->
-        <model-viewer
-          id="ar-viewer"
-          src="https://modelviewer.dev/shared-assets/models/Astronaut.glb"
-          alt="A 3D model of an astronaut floating in space"
-          ar
-          ar-modes="webxr scene-viewer quick-look"
-          ar-scale="auto"
-          ar-placement="floor"
-          camera-controls
-          auto-rotate
-          auto-rotate-delay="2000"
-          shadow-intensity="1"
-          environment-image="neutral"
-          exposure="1.1"
-          tone-mapping="neutral"
-          xr-environment
-        >
-          <!-- Custom AR button (only appears on AR-capable devices) -->
-          <button slot="ar-button" class="ar-button">
-            <span class="icon" aria-hidden="true"></span>
-            <span>View in AR</span>
-          </button>
-
-          <!-- Simple AR instructions (visible during active WebXR AR session) -->
-          <div id="ar-instructions">
-            Point camera at the floor and tap to place.
-          </div>
-        </model-viewer>
-      </div>
-    </section>
-
-    <p class="hint">
-      Tip: On your phone, tap <strong>View in AR</strong> to open the camera and place the astronaut
-      on a flat surface. Use pinch & rotate gestures to scale and rotate it.
-    </p>
-  </main>
-</body>
-</html>
+      font: 600 0.95rem system-ui, -apple-system, BlinkMacSystemFont, "Sego
